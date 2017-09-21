@@ -39,7 +39,7 @@ int main(int argc, char * argv[])
 	int counter = 0;
 	int pos = 0;
 
-	if (argc > 0)
+	if (argc > 1)
 	{
 		std::ifstream input_file(argv[1]);
 		getline(input_file, str_entire_line);
@@ -71,7 +71,10 @@ int main(int argc, char * argv[])
 			std::istringstream entire_line(str_entire_line);
 			while (entire_line)
 			{
-				entire_line >> str_col >> str_val;
+				entire_line >> str_col;
+				entire_line >> str_val;
+				//std::cout << str_col << " " <<  str_val << " ";
+
 				int_col_val = atoi(str_col.c_str());
 				int_nnz_val = atoi(str_val.c_str());
 				current_matrix.col_ptr_[col_ptr_counter] = int_col_val;
@@ -82,7 +85,7 @@ int main(int argc, char * argv[])
 			current_matrix.row_ptr_[row_ptr_counter] += col_ptr_counter;
 			row_ptr_counter++;
 		}//end while in file
-		std::cout << "values in col_ptr: ";
+		std::cout << "\n" << "values in col_ptr: ";
 		for (int i = 0; i < current_matrix.nonzeroes; i++) {
 			std::cout << current_matrix.col_ptr_[i] << " ";
 		}
