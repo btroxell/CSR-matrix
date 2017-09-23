@@ -8,11 +8,11 @@
 
 //, std::ofstream &transpose_of
 
-void create_transpose_matrix(CSR_STRUCTURE &csr_matrix)
+void create_transpose_matrix(CSR_STRUCTURE &csr_matrix, std::ofstream &transpose_of)
 {
 	
 	int transpose_rows = csr_matrix.columns_;
-	int transpose_cols = csr_matrix.nonzeroes_;
+	int transpose_cols = csr_matrix.rows_;
 	int transpose_nnzs = csr_matrix.nonzeroes_;
 	int *row_counts = new int[transpose_rows-1];
 
@@ -58,15 +58,15 @@ void create_transpose_matrix(CSR_STRUCTURE &csr_matrix)
 	}
 
 	
-	//transpose_of << transpose_matrix.rows_ << " " << transpose_matrix.columns_ << " " << transpose_matrix.nonzeroes_ << "\n";
-	/*
+	transpose_of << transpose_matrix.rows_ << " " << transpose_matrix.columns_ << " " << transpose_matrix.nonzeroes_ << "\n";
+	
 	for (int i = 0; i < transpose_matrix.rows_; i++) {
 		for (int j = transpose_matrix.row_ptr_[i]; j < transpose_matrix.row_ptr_[i + 1]; j++) {
-			transpose_of << transpose_matrix.col_ptr_[j] + 1 << " " << transpose_matrix.nnz_val_[j];
+			transpose_of << transpose_matrix.col_ptr_[j] << " " << transpose_matrix.nnz_val_[j] << " ";
 		}
 		transpose_of << "\n";
 	}
-	*/
+	
 	
 	std::cout << "non zero values in transpose CSR matrix: ";
 	for (int i = 0; i < transpose_matrix.nonzeroes_; i++) {
@@ -194,6 +194,9 @@ int main(int argc, char * argv[])
 
 		std::istringstream first_line_ss(str_entire_line);
 
+		std::ofstream transpose_outfile(argv[2], std::ofstream::out);
+		//transpose_outfile << "created and opened file";
+
 		//std::cout << str_entire_line << std::endl;
 		do {
 			first_line_ss >> str_info;
@@ -275,12 +278,14 @@ int main(int argc, char * argv[])
 		}
 		std::cout << std::endl;
 
+		/*TO DO*/
+		/*get the arguments and write to an output file*/
+		/*think it might have to do with args*/
+
 		
-
-
-		//std::ofstream transpose_outfile(argv[2]);
 		//std::ofstream cos_sim_outfile(argv[3]);
 		//int threshold = atof(argv[4]);
+		
 
 		//transpose_outfile.open(argv[2], out);
 
@@ -288,7 +293,12 @@ int main(int argc, char * argv[])
 		//, transpose_outfile
 
 		//std::cout << current_matrix.row_ptr_[6] << std::endl;
-		create_transpose_matrix(current_matrix);
+		create_transpose_matrix(current_matrix, transpose_outfile);
+
+		
+		//transpose_outfile.open(argv[2]);
+
+		
 		//cosine_simularity(current_matrix, cos_sim_outfile, threshold);
 		
 	}//end if
