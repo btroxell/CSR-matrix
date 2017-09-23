@@ -8,7 +8,7 @@
 
 //, std::ofstream &transpose_of
 
-void create_transpose_matrix(CSR_STRUCTURE &csr_matrix, std::ofstream &transpose_of)
+CSR_STRUCTURE create_transpose_matrix(CSR_STRUCTURE &csr_matrix)
 {
 	
 	int transpose_rows = csr_matrix.columns_;
@@ -23,7 +23,7 @@ void create_transpose_matrix(CSR_STRUCTURE &csr_matrix, std::ofstream &transpose
 		transpose_matrix.row_ptr_[i] = 0;
 	}//end for
 
-	std::cout << csr_matrix.row_ptr_[6] << std::endl;
+	//std::cout << csr_matrix.row_ptr_[6] << std::endl;
 
 	/*counts number of non zero values in a column by incrementing the value in the row_ptr everytime it sees the same column*/
 	/*it also updates the number of non zeros in that column which turns into the # of nonzeros in that row of the transpose*/
@@ -38,7 +38,7 @@ void create_transpose_matrix(CSR_STRUCTURE &csr_matrix, std::ofstream &transpose
 		//std::cout << "values in transpose row_ptr: " << transpose_matrix.row_ptr_[i] << " " << i << std::endl;
 	}
 	
-	std::cout << "before constructing row_ptr2" << std::endl;
+	//std::cout << "before constructing row_ptr2" << std::endl;
 	/*constructs the transpose matrix row_ptr and updates its values*/
 	for (int i = 0; i < csr_matrix.rows_ + 1; i++) 
 	{
@@ -57,17 +57,9 @@ void create_transpose_matrix(CSR_STRUCTURE &csr_matrix, std::ofstream &transpose
 		}
 	}
 
+	return transpose_matrix;
 	
-	transpose_of << transpose_matrix.rows_ << " " << transpose_matrix.columns_ << " " << transpose_matrix.nonzeroes_ << "\n";
-	
-	for (int i = 0; i < transpose_matrix.rows_; i++) {
-		for (int j = transpose_matrix.row_ptr_[i]; j < transpose_matrix.row_ptr_[i + 1]; j++) {
-			transpose_of << transpose_matrix.col_ptr_[j] << " " << transpose_matrix.nnz_val_[j] << " ";
-		}
-		transpose_of << "\n";
-	}
-	
-	
+	/*
 	std::cout << "non zero values in transpose CSR matrix: ";
 	for (int i = 0; i < transpose_matrix.nonzeroes_; i++) {
 		std::cout << transpose_matrix.nnz_val_[i] << " ";
@@ -85,22 +77,24 @@ void create_transpose_matrix(CSR_STRUCTURE &csr_matrix, std::ofstream &transpose
 		std::cout << transpose_matrix.row_ptr_[i] << " ";
 	}
 	std::cout << std::endl;
+	*/
+}
+
+
+void output_matrix(CSR_STRUCTURE &csr_matrix, std::ofstream &transpose_of) 
+{
+	transpose_of << csr_matrix.rows_ << " " << csr_matrix.columns_ << " " << csr_matrix.nonzeroes_ << "\n";
+	
+	for (int i = 0; i < csr_matrix.rows_; i++) {
+		for (int j = csr_matrix.row_ptr_[i]; j < csr_matrix.row_ptr_[i + 1]; j++) 
+		{
+			transpose_of << csr_matrix.col_ptr_[j] + 1 << " " << csr_matrix.nnz_val_[j] << " ";
+		}
+		transpose_of << "\n";
+	}
 	
 }
 
-/*
-void output_matrix(CSR_STRUCTURE csr_matrix, std::ofstream &matrix_of) 
-{
-	matrix_of << csr_matrix.rows_ << " " << csr_matrix.columns_ << " " << csr_matrix.nonzeroes_ << "\n";
-
-	for (int i = 0; i < csr_matrix.rows_; i++) {
-		for (int j = csr_matrix.row_ptr_[i]; j < csr_matrix.row_ptr_[i + 1]; j++) {
-			matrix_of << csr_matrix.col_ptr_[j]+1 << " " << csr_matrix.nnz_val_[j];
-		}
-		matrix_of << "\n";
-	}
-}
-*/
 
 void cosine_simularity(CSR_STRUCTURE csr_matrix, std::ofstream &sim_of, double threshold_in) 
 {
@@ -260,23 +254,6 @@ int main(int argc, char * argv[])
 		}//end while in file
 
 		
-		std::cout << "non zero values in CSR matrix: ";
-		for (int i = 0; i < current_matrix.nonzeroes_; i++) {
-		std::cout << current_matrix.nnz_val_[i] << " ";
-		}
-		std::cout << std::endl;
-
-		std::cout << "column values in CSR matrix: ";
-		for (int i = 0; i < current_matrix.nonzeroes_; i++) {
-			std::cout << current_matrix.col_ptr_[i] << " ";
-		}
-		std::cout << std::endl;
-
-		std::cout << "row values in CSR matrix: ";
-		for (int i = 0; i < current_matrix.rows_+1; i++) {
-			std::cout << current_matrix.row_ptr_[i] << " ";
-		}
-		std::cout << std::endl;
 
 		/*TO DO*/
 		/*get the arguments and write to an output file*/
@@ -293,10 +270,27 @@ int main(int argc, char * argv[])
 		//, transpose_outfile
 
 		//std::cout << current_matrix.row_ptr_[6] << std::endl;
-		create_transpose_matrix(current_matrix, transpose_outfile);
+		CSR_STRUCTURE trans_matrix = create_transpose_matrix(current_matrix);
 
-		
-		//transpose_outfile.open(argv[2]);
+		output_matrix(trans_matrix, transpose_outfile);
+
+		std::cout << "non zero values in CSR matrix: ";
+		for (int i = 0; i < trans_matrix.nonzeroes_; i++) {
+			std::cout << trans_matrix.nnz_val_[i] << " ";
+		}
+		std::cout << std::endl;
+
+		std::cout << "column values in CSR matrix: ";
+		for (int i = 0; i < trans_matrix.nonzeroes_; i++) {
+			std::cout << trans_matrix.col_ptr_[i] << " ";
+		}
+		std::cout << std::endl;
+
+		std::cout << "row values in CSR matrix: ";
+		for (int i = 0; i < trans_matrix.rows_ + 1; i++) {
+			std::cout << trans_matrix.row_ptr_[i] << " ";
+		}
+		std::cout << std::endl;
 
 		
 		//cosine_simularity(current_matrix, cos_sim_outfile, threshold);
