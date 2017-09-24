@@ -31,10 +31,10 @@ CSR_STRUCTURE::CSR_STRUCTURE(const CSR_STRUCTURE &csr)
 
 CSR_STRUCTURE::~CSR_STRUCTURE(void) 
 {
-	/*
-	delete[] nnz_val_;
-	delete[] col_ptr_;
-	delete[] row_ptr_;
-	*/
+	
+	//delete[] nnz_val_;
+	//delete[] col_ptr_;
+	//delete[] row_ptr_;
+	
 }
 
